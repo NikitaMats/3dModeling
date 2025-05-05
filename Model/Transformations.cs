@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace TestCase_Sputnik.Model
+namespace TestCase_Sputnik
 {
-    public class Transformations
+    /// <summary>
+    /// Статический класс для геометрических преобразований
+    /// </summary>
+    public static class Transformations
     {
-        public static void Translate(Cube model, double dx, double dy, double dz)
+        /// <summary>
+        /// Перенос модели вдоль осей
+        /// </summary>
+        public static void Translate(CustomModel3D model, double dx, double dy, double dz)
         {
             for (int i = 0; i < model.Vertices.Count; i++)
             {
@@ -20,22 +22,28 @@ namespace TestCase_Sputnik.Model
             }
         }
 
-        public static void Scale(Cube model, double sx, double sy, double sz)
+        /// <summary>
+        /// Масштабирование модели
+        /// </summary>
+        public static void Scale(CustomModel3D model, double scaleFactor)
         {
             for (int i = 0; i < model.Vertices.Count; i++)
             {
                 model.Vertices[i] = new Point3D(
-                    model.Vertices[i].X * sx,
-                    model.Vertices[i].Y * sy,
-                    model.Vertices[i].Z * sz);
+                    model.Vertices[i].X * scaleFactor,
+                    model.Vertices[i].Y * scaleFactor,
+                    model.Vertices[i].Z * scaleFactor);
             }
         }
 
-        public static void RotateX(Cube model, double angle)
+        /// <summary>
+        /// Вращение вокруг оси X
+        /// </summary>
+        public static void RotateX(CustomModel3D model, double angleDegrees)
         {
-            double rad = angle * Math.PI / 180;
-            double cos = Math.Cos(rad);
-            double sin = Math.Sin(rad);
+            double angleRad = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRad);
+            double sin = Math.Sin(angleRad);
 
             for (int i = 0; i < model.Vertices.Count; i++)
             {
@@ -45,6 +53,38 @@ namespace TestCase_Sputnik.Model
             }
         }
 
-        // Аналогично для RotateY и RotateZ
+        /// <summary>
+        /// Вращение вокруг оси Y
+        /// </summary>
+        public static void RotateY(CustomModel3D model, double angleDegrees)
+        {
+            double angleRad = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRad);
+            double sin = Math.Sin(angleRad);
+
+            for (int i = 0; i < model.Vertices.Count; i++)
+            {
+                double x = model.Vertices[i].Z * sin + model.Vertices[i].X * cos;
+                double z = model.Vertices[i].Z * cos - model.Vertices[i].X * sin;
+                model.Vertices[i] = new Point3D(x, model.Vertices[i].Y, z);
+            }
+        }
+
+        /// <summary>
+        /// Вращение вокруг оси Z
+        /// </summary>
+        public static void RotateZ(CustomModel3D model, double angleDegrees)
+        {
+            double angleRad = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRad);
+            double sin = Math.Sin(angleRad);
+
+            for (int i = 0; i < model.Vertices.Count; i++)
+            {
+                double x = model.Vertices[i].X * cos - model.Vertices[i].Y * sin;
+                double y = model.Vertices[i].X * sin + model.Vertices[i].Y * cos;
+                model.Vertices[i] = new Point3D(x, y, model.Vertices[i].Z);
+            }
+        }
     }
 }

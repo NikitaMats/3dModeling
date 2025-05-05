@@ -1,123 +1,98 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using TestCase_Sputnik.Model;
+using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace TestCase_Sputnik
 {
     public partial class MainWindow : Window
     {
-        private readonly Cube originalModel;
-        private readonly Cube currentModel;
+        private readonly CustomModel3D _originalModel;
+        private CustomModel3D _currentModel;
 
         public MainWindow()
         {
             InitializeComponent();
-            originalModel = new Cube();
-            currentModel = new Cube
+
+            try
             {
-                Vertices = new System.Collections.Generic.List<Point3D>(originalModel.Vertices),
-                Edges = new System.Collections.Generic.List<Tuple<int, int>>(originalModel.Edges)
+                // Проверка инициализации Viewport
+                if (Viewport == null)
+                    throw new InvalidOperationException("Viewport not initialized in XAML");
+
+                _originalModel = new CustomModel3D();
+                ResetModel();
+                DrawModel();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Initialization error: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+            }
+        }
+
+        private void ResetModel()
+        {
+            _currentModel = new CustomModel3D
+            {
+                Vertices = new List<Point3D>(_originalModel.Vertices),
+                Edges = new List<(int, int)>(_originalModel.Edges)
             };
-            DrawModel();
         }
 
         private void DrawModel()
         {
-            viewport.Children.Clear();
+            if (Viewport == null || _currentModel == null) return;
 
-            // Добавляем оси координат для ориентира
-            AddCoordinateAxes();
-
-            foreach (var edge in currentModel.Edges)
+            try
             {
-                var line = new ScreenSpaceLines3D();
-                line.Points.Add(currentModel.Vertices[edge.Item1]);
-                line.Points.Add(currentModel.Vertices[edge.Item2]);
-                line.Color = Colors.Blue;
-                line.Thickness = 2;
-                viewport.Children.Add(line);
+                Viewport.Children.Clear();
+
+                // Отрисовка модели
+                foreach (var edge in _currentModel.Edges)
+                {
+                    if (edge.Start >= _currentModel.Vertices.Count ||
+                        edge.End >= _currentModel.Vertices.Count)
+                        continue;
+
+                    var line = new ScreenSpaceLines3D
+                    {
+                        Color = Colors.Blue,
+                        Thickness = 2
+                    };
+                    line.SetPoints(
+                        _currentModel.Vertices[edge.Start],
+                        _currentModel.Vertices[edge.End]);
+
+                    Viewport.Children.Add(line);
+                }
             }
-        }
-
-        private void AddCoordinateAxes()
-        {
-            // Ось X (красная)
-            var xAxis = new ScreenSpaceLines3D();
-            xAxis.Points.Add(new Point3D(0, 0, 0));
-            xAxis.Points.Add(new Point3D(2, 0, 0));
-            xAxis.Color = Colors.Red;
-            xAxis.Thickness = 1;
-            viewport.Children.Add(xAxis);
-
-            // Ось Y (зеленая)
-            var yAxis = new ScreenSpaceLines3D();
-            yAxis.Points.Add(new Point3D(0, 0, 0));
-            yAxis.Points.Add(new Point3D(0, 2, 0));
-            yAxis.Color = Colors.Green;
-            yAxis.Thickness = 1;
-            viewport.Children.Add(yAxis);
-
-            // Ось Z (синяя)
-            var zAxis = new ScreenSpaceLines3D();
-            zAxis.Points.Add(new Point3D(0, 0, 0));
-            zAxis.Points.Add(new Point3D(0, 0, 2));
-            zAxis.Color = Colors.Blue;
-            zAxis.Thickness = 1;
-            viewport.Children.Add(zAxis);
-        }
-
-        private void Reset_Click(object sender, RoutedEventArgs e)
-        {
-            currentModel.Vertices = new System.Collections.Generic.List<Point3D>(originalModel.Vertices);
-            currentModel.Edges = new System.Collections.Generic.List<Tuple<int, int>>(originalModel.Edges);
-            DrawModel();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Rendering error: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Translate_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (txtTranslateX == null || !double.TryParse(txtTranslateX.Text, out double dx))
             {
-                double dx = double.Parse(txtDx.Text);
-                double dy = double.Parse(txtDy.Text);
-                double dz = double.Parse(txtDz.Text);
+                MessageBox.Show("Invalid X value", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-                Transformations.Translate(currentModel, dx, dy, dz);
-                DrawModel();
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Please enter valid numbers", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            Transformations.Translate(_currentModel, dx, 0, 0);
+            DrawModel();
         }
 
-        private void RotateX_Click(object sender, RoutedEventArgs e)
+        private void Reset_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                double angle = double.Parse(txtRotX.Text);
-                Transformations.RotateX(currentModel, angle);
-                DrawModel();
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Please enter a valid angle", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void Scale_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                double scale = double.Parse(txtScale.Text);
-                //Transformations.Scale(currentModel, scale);
-                DrawModel();
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Please enter a valid scale factor", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            ResetModel();
+            DrawModel();
         }
     }
 }
