@@ -8,12 +8,4 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Model\ModelVisual3D.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Model\ModelVisual3D.cs" />
-  </ItemGroup>
-
 </Project>

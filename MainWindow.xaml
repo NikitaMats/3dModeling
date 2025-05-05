@@ -1,25 +1,7 @@
 ﻿<Window x:Class="TestCase_Sputnik.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:TestCase_Sputnik"
-        Title="3D Model Visualizer" 
-        Height="600" 
-        Width="800">
-    <Window.Resources>
-        <!-- Стиль для кнопок -->
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="10,5"/>
-            <Setter Property="Background" Value="#FFDDDDDD"/>
-        </Style>
-
-        <!-- Стиль для текстовых полей -->
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="3"/>
-        </Style>
-    </Window.Resources>
-
+        Title="3D Model Viewer" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -27,108 +9,24 @@
         </Grid.ColumnDefinitions>
 
         <!-- Левая панель управления -->
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10">
-                <!-- Группа трансформаций -->
-                <GroupBox Header="Transformations" Margin="0,0,0,15">
-                    <StackPanel>
-                        <!-- Перенос -->
-                        <Expander Header="Translation" IsExpanded="True">
-                            <StackPanel>
-                                <TextBlock Text="X:" Margin="5,5,5,0"/>
-                                <TextBox x:Name="txtTranslateX" Text="0"/>
+        <StackPanel Grid.Column="0" Margin="10">
+            <Button Content="Добавить куб" Click="AddCube_Click"/>
+            <Button Content="Сброс" Click="ResetScene_Click"/>
+        </StackPanel>
 
-                                <TextBlock Text="Y:" Margin="5,5,5,0"/>
-                                <TextBox x:Name="txtTranslateY" Text="0"/>
+        <!-- Область 3D-визуализации -->
+        <Viewport3D x:Name="Viewport" Grid.Column="1">
+            <Viewport3D.Camera>
+                <PerspectiveCamera Position="5,5,5" LookDirection="-1,-1,-1"
+                                  UpDirection="0,1,0" FieldOfView="60"/>
+            </Viewport3D.Camera>
 
-                                <TextBlock Text="Z:" Margin="5,5,5,0"/>
-                                <TextBox x:Name="txtTranslateZ" Text="0"/>
-
-                                <Button Content="Apply" Click="Translate_Click"/>
-                            </StackPanel>
-                        </Expander>
-
-                        <!-- Вращение -->
-                        <Expander Header="Rotation">
-                            <StackPanel>
-                                <TextBlock Text="X Angle (deg):" Margin="5,5,5,0"/>
-                                <TextBox x:Name="txtRotateX" Text="0"/>
-
-                                <Button Content="Rotate X" Click="RotateX_Click" Margin="0,5"/>
-
-                                <!-- Аналогично для Y и Z -->
-                            </StackPanel>
-                        </Expander>
-
-                        <!-- Масштабирование -->
-                        <Expander Header="Scale">
-                            <StackPanel>
-                                <TextBlock Text="Scale Factor:" Margin="5,5,5,0"/>
-                                <TextBox x:Name="txtScale" Text="1"/>
-
-                                <Button Content="Apply Scale" Click="Scale_Click"/>
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
-                </GroupBox>
-
-                <!-- Группа проекций -->
-                <GroupBox Header="Projection" Margin="0,0,0,15">
-                    <StackPanel>
-                        <RadioButton x:Name="rbPerspective" Content="Perspective" IsChecked="True" GroupName="Projection" Checked="Projection_Changed"/>
-                        <RadioButton x:Name="rbOrthographic" Content="Orthographic" GroupName="Projection" Checked="Projection_Changed"/>
-                    </StackPanel>
-                </GroupBox>
-
-                <!-- Группа настроек -->
-                <GroupBox Header="Settings">
-                    <StackPanel>
-                        <CheckBox x:Name="chkAxes" Content="Show Axes" IsChecked="True" Checked="ToggleAxes" Unchecked="ToggleAxes"/>
-                        <CheckBox x:Name="chkWireframe" Content="Wireframe Mode" Checked="ToggleWireframe" Unchecked="ToggleWireframe"/>
-
-                        <Button Content="Reset All" Click="Reset_Click" Margin="0,10" Background="#FFE74C3C" Foreground="White"/>
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
-        </ScrollViewer>
-
-        <!-- Правая часть - область просмотра 3D -->
-        <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
-            <Viewport3D Grid.Row="1">
-                <Viewport3D.Camera>
-                    <PerspectiveCamera Position="0.5,1.5,3.5" LookDirection="0,-1,-3.5"  />
-                </Viewport3D.Camera>
-                <Viewport3D.Children>
-                    <ModelVisual3D>
-                        <ModelVisual3D.Content>
-                            <DirectionalLight Color="White" Direction="-1,-1,-2" />
-                        </ModelVisual3D.Content>
-                    </ModelVisual3D>
-                    <ModelVisual3D>
-                        <ModelVisual3D.Content>
-                            <GeometryModel3D>
-                                <GeometryModel3D.Geometry>
-                                    <MeshGeometry3D Positions="0,0,0 1,0,0 0,1,0 1,1,0 
-                      0,0,1 1,0,1 0,1,1 1,1,1"
- TriangleIndices="0,2,1 1,2,3 0,4,2 2,4,6 
-                  0,1,4 1,5,4 1,7,5 1,3,7
-                  4,5,6 7,6,5 2,6,3 3,6,7"/>
-                                </GeometryModel3D.Geometry>
-                                <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="Blue" />
-                                </GeometryModel3D.Material>
-                            </GeometryModel3D>
-                        </ModelVisual3D.Content>
-                        <ModelVisual3D.Transform>
-                            <RotateTransform3D>
-                                <RotateTransform3D.Rotation>
-                                    <AxisAngleRotation3D x:Name="rotate" Axis="0 1 0" />
-                                </RotateTransform3D.Rotation>
-                            </RotateTransform3D>
-                        </ModelVisual3D.Transform>
-                    </ModelVisual3D>
-                </Viewport3D.Children>
-            </Viewport3D>
-        </Border>
+            <!-- Источник света -->
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="White" Direction="-1,-1,-1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+        </Viewport3D>
     </Grid>
 </Window>
