@@ -92,7 +92,6 @@ namespace TestCase_Sputnik.Models.ViewportModels
                     _mesh.Positions[i].X,
                     _mesh.Positions[i].Y,
                     _mesh.Positions[i].Z);
-                normal.Normalize();
                 normals.Add(normal);
             }
             return normals;
@@ -100,7 +99,13 @@ namespace TestCase_Sputnik.Models.ViewportModels
 
         private void UpdateMaterial()
         {
-            _model.Material = new DiffuseMaterial(new SolidColorBrush(Color));
+            var material = new MaterialGroup();
+            material.Children.Add(new DiffuseMaterial(new SolidColorBrush(Color)));
+            material.Children.Add(new SpecularMaterial(new SolidColorBrush(Colors.White), 60));
+            material.Children.Add(new EmissiveMaterial(new SolidColorBrush(Color)));
+
+            _model.Material = material;
+            _model.BackMaterial = material;
         }
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
