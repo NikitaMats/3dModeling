@@ -66,22 +66,54 @@ namespace TestCase_Sputnik.ViewModels
 
         private void ExecuteRotateX()
         {
-            _renderService.Rotate(RotationAxis.X, Transformations.RotateX);
+            if (Transformations.RotateX >= 0 && Transformations.RotateX <= 360)
+            {
+                _renderService.Rotate(RotationAxis.X, Transformations.RotateX);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Enter a valid angle value (0 ≤ scale ≤ 360)");
+                Transformations.RotateX = 0;
+            }
         }
 
         private void ExecuteRotateY()
         {
-            _renderService.Rotate(RotationAxis.Y, Transformations.RotateY);
+            if (Transformations.RotateY >= 0 && Transformations.RotateY <= 360)
+            {
+                _renderService.Rotate(RotationAxis.Y, Transformations.RotateY);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Enter a valid angle value (0 ≤ scale ≤ 360)");
+                Transformations.RotateY = 0;
+            }
         }
 
         private void ExecuteRotateZ()
         {
-            _renderService.Rotate(RotationAxis.Z, Transformations.RotateZ);
+            if (Transformations.RotateZ >= 0 && Transformations.RotateZ <= 360)
+            {
+                _renderService.Rotate(RotationAxis.Z, Transformations.RotateZ);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Enter a valid angle value (0 ≤ scale ≤ 360)");
+                Transformations.RotateZ = 0;
+            }
         }
 
         private void ExecuteScale()
         {
-            _renderService.Scale(Transformations.Scale);
+            if (Transformations.Scale > 0 && Transformations.Scale <= 10)
+            {
+                _renderService.Scale(Transformations.Scale);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Please enter a valid scale value (0 < scale ≤ 10)");
+                Transformations.Scale = 1.0;
+            }
         }
 
         private void ExecuteReset()

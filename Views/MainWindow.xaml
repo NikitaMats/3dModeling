@@ -74,7 +74,7 @@
                         <Expander Header="Scale">
                             <StackPanel>
                                 <TextBlock Text="Scale Factor:" Margin="5,5,5,0"/>
-                                <TextBox Text="{Binding Transformations.Scale, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Text="{Binding Transformations.Scale, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" />
                                 <Button Content="Apply Scale" Command="{Binding ScaleCommand}"/>
                             </StackPanel>
                         </Expander>

@@ -30,28 +30,68 @@ namespace TestCase_Sputnik.Models
         public double RotateX
         {
             get => _rotateX;
-            set => SetField(ref _rotateX, value);
+            set
+            {
+                if (value >= 0 && value <= 360)
+                {
+                    SetField(ref _rotateX, value);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("The rotation angle must be greater than 0 and not more than 360");
+                }
+            }
         }
 
         private double _rotateY;
         public double RotateY
         {
             get => _rotateY;
-            set => SetField(ref _rotateY, value);
+            set
+            {
+                if (value >= 0 && value <= 360)
+                {
+                    SetField(ref _rotateY, value);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("The rotation angle must be greater than 0 and not more than 360");
+                }
+            }
         }
 
         private double _rotateZ;
         public double RotateZ
         {
             get => _rotateZ;
-            set => SetField(ref _rotateZ, value);
+            set
+            {
+                if (value >= 0 && value <= 360)
+                {
+                    SetField(ref _rotateZ, value);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("The rotation angle must be greater than 0 and not more than 360");
+                }
+            }
         }
 
         private double _scale = 1.0;
         public double Scale
         {
             get => _scale;
-            set => SetField(ref _scale, value);
+            set
+            {
+                if (value > 0 && value <= 10)
+                {
+                    SetField(ref _scale, value);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("The scale must be greater than 0 and not greater than 10");
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
