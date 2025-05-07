@@ -112,7 +112,6 @@ namespace TestCase_Sputnik.ViewModels
             else
             {
                 System.Windows.MessageBox.Show("Please enter a valid scale value (0 < scale ≤ 10)");
-                Transformations.Scale = 1.0;
             }
         }
 
