@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace TestCase_Sputnik
+namespace TestCase_Sputnik.Models.ViewportModels
 {
     public class ThickLine3D : ModelVisual3D
     {
